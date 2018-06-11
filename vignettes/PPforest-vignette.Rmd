@@ -30,7 +30,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = TRUE, autodep=TR
 opts_knit$set(eval.after = 'fig.cap')
 theme_set(theme_bw(base_family="serif"))
 ```
-##Introduction
+## Introduction
 
 The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
 
@@ -338,7 +338,7 @@ mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
   df <- data.frame(Class = ppf$train[, 1], rf.mds$points)
 
   mds <- ggplot2::ggplot(data = df) +
-   ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Type),
+   ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Class),
               size = I(siz), alpha = .5) +
    ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2", name = "Type") +
    ggplot2::theme(legend.position = lege, aspect.ratio = 1)
@@ -347,7 +347,7 @@ mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 }
 capmds<- "Multidimensional scaling plot to examine similarities between cases"
   
-mdspl2d(pprf.crab)
+mdspl2d(ppf = pprf.crab)
 ```
  &nbsp;
  
@@ -391,7 +391,7 @@ capside <-"Vote matrix representation by a jittered side-by-side dotplot. Each d
 
 &nbsp;
  
-```{r ternary, fig.align="center",fig.cap= capter, fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
+```{r ternary, fig.align = "center",fig.cap = capter, fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo=FALSE}
  pl_ter <- function(dat, dx, dy ){ 
  p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>% 
    dplyr::select(Class, x, y) %>% 
