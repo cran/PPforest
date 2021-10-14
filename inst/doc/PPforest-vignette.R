@@ -9,7 +9,7 @@ library(ggplot2)
 library(knitr)
 set.seed(310756) #reproducibility
 
-## ----hooks, echo = FALSE-------------------------------------------------
+## ----hooks, echo = FALSE------------------------------------------------------
 
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = TRUE, autodep=TRUE, cache.lazy=FALSE )
 opts_knit$set(eval.after = 'fig.cap')
@@ -28,50 +28,50 @@ a <- GGally::ggpairs(PPforest::crab,
 capmatrix<-"Scatter plot matrix of crab data "
 a
 
-## ----ppsplit-------------------------------------------------------------
+## ----ppsplit------------------------------------------------------------------
 Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 0.6)
  Tree.crab
 
-## ----ppf-----------------------------------------------------------------
+## ----ppf----------------------------------------------------------------------
 
 pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = .8, m = 200,
                                 size.p =  .5,  PPmethod = 'LDA',  parallel =FALSE, cores = 2)
 
 pprf.crab
 
-## ----ppstr---------------------------------------------------------------
+## ----ppstr--------------------------------------------------------------------
 str(pprf.crab, max.level = 1 )
 
-## ----predtest------------------------------------------------------------
+## ----predtest-----------------------------------------------------------------
 pprf.crab$prediction.test
 
-## ----impo1---------------------------------------------------------------
+## ----impo1--------------------------------------------------------------------
 impo1 <- permute_importance(pprf.crab)
 impo1
 
-## ----figimp1, fig.align="center", fig.cap=capimp1,echo=FALSE-------------
+## ----figimp1, fig.align="center", fig.cap=capimp1,echo=FALSE------------------
 ggplot(impo1, aes(x = imp, y = nm) ) + geom_point()
 capimp1 <- "Permuted importance variable"
 
-## ----impo2---------------------------------------------------------------
+## ----impo2--------------------------------------------------------------------
 
 impo2 <-  ppf_avg_imp(pprf.crab, "Type")
 impo2
 
 
-## ----figimp2, fig.align="center",  fig.cap=capimp2,echo=FALSE------------
+## ----figimp2, fig.align="center",  fig.cap=capimp2,echo=FALSE-----------------
  ggplot(impo2, aes(x = mean, y = variable) ) + geom_point() 
 capimp2<- "Average importance variable"
 
-## ----impo3---------------------------------------------------------------
+## ----impo3--------------------------------------------------------------------
 impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab)
 impo3
 
-## ----figimp3, fig.align = "center",  fig.cap = capimp3, echo = FALSE-----
+## ----figimp3, fig.align = "center",  fig.cap = capimp3, echo = FALSE----------
 ggplot(impo3, aes(x = mean, y = variable) ) + geom_point()
 capimp3 <- "Global importance variable"
 
-## ----parallel, , fig.align="center", fig.cap= capar, fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo = FALSE----
+## ----parallel, fig.align="center", fig.cap= capar, fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo = FALSE----
 parallel <- function(ppf){
 myscale <- function(x) (x - mean(x)) / sd(x)
 
@@ -87,12 +87,14 @@ ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value,
   ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2")
 
 
+
 }
 
 capar <-"Parallel coordinate plot of crab data"
- parallel(pprf.crab)
+parallel(pprf.crab)
 
-## ----mds, , fig.align="center",fig.cap= capmds, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE----
+
+## ----mds, fig.align="center",fig.cap= capmds, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE----
 
 mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 
