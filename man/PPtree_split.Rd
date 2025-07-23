@@ -12,7 +12,7 @@ size.p=1,  lambda = 0.1,...)
 
 \item{data}{Data frame with the complete data set.}
 
-\item{PPmethod}{index to use for projection pursuit: 'LDA', 'PDA'}
+\item{PPmethod}{index to use for projection pursuit: 'LDA' and 'PDA'}
 
 \item{size.p}{proportion of variables randomly sampled in each split, default is 1, returns a PPtree.}
 
@@ -25,11 +25,11 @@ An object of class \code{PPtreeclass} with components
 \item{Tree.Struct}{Tree structure of projection pursuit classification tree}
 \item{projbest.node}{1-dim optimal projections of each split node}
 \item{splitCutoff.node}{cutoff values of each split node}
-\item{origclass}{original class} 
+\item{origclass_num}{original class numeric} 
 \item{origdata}{original data}
 }
 \description{
-Find tree structure using various projection pursuit indices of classification in each split.
+Find tree structure using  projection pursuit indices of classification in each split.
 }
 \examples{
 #crab data set

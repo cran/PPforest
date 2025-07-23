@@ -5,8 +5,8 @@ require(RColorBrewer)
 require(GGally)
 require(gridExtra)
 require(PPtreeViz)
-library(ggplot2)
-library(knitr)
+require(ggplot2)
+require(knitr)
 set.seed(310756) #reproducibility
 
 ## ----hooks, echo = FALSE------------------------------------------------------
@@ -34,8 +34,8 @@ Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", siz
 
 ## ----ppf----------------------------------------------------------------------
 
-pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = .8, m = 200,
-                                size.p =  .5,  PPmethod = 'LDA',  parallel =FALSE, cores = 2)
+pprf.crab <- PPforest::PPforest(data = crab, y = "Type", std = 'min-max', size.tr = .7, m = 200,
+                                size.p =  .8,  PPmethod = 'LDA',  parallel = TRUE, cores = 2)
 
 pprf.crab
 
@@ -64,7 +64,7 @@ impo2
 capimp2<- "Average importance variable"
 
 ## ----impo3--------------------------------------------------------------------
-impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab)
+impo3 <- ppf_global_imp(data = crab, y = "Type", pprf.crab)
 impo3
 
 ## ----figimp3, fig.align = "center",  fig.cap = capimp3, echo = FALSE----------

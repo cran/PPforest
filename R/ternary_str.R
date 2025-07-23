@@ -8,9 +8,10 @@
 #' @return Data frame needed to visualize a ternary plot
 #' @export
 #' @importFrom magrittr %>%
+#' @references da da Silva, N., Cook, D. & Lee, EK. Interactive graphics for visually diagnosing forest classifiers in R. Comput Stat 40, 3105–3125 (2025). https://doi.org/10.1007/s00180-023-01323-x
 #' @examples
 #' #crab data set with all the observations used as training
-#' pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
+#' pprf.crab <- PPforest(data = crab, std ='min-max', y = "Type",
 #'  size.tr = 1, m = 100, size.p = .5, PPmethod = 'LDA')
 #'  require(dplyr)
 #' pl_ter <- function(dat, dx, dy ){
@@ -72,7 +73,7 @@ makePairs <- function(dat, id) {
 #ppf PPforest object
 #id select proj directions
 ternarydata <- function(ppf, id){
-  n.class <- ppf$train %>% dplyr::select_(ppf$class.var) %>% unique() %>% nrow()
+  n.class <- ppf$train %>% dplyr::select(tidyselect::all_of(ppf$class.var) )%>% unique() %>% nrow()
   projct <- t(f.helmert(nrow(unique(data.frame(ppf$train[, ppf$class.var]))))[-1,])
   
   dat3 <-

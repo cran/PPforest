@@ -15,24 +15,19 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, rule = 1)
 
 \item{cores}{number of cores used in the parallelization}
 
-\item{rule}{split rule 1: mean of two group means 2: weighted mean of two group means - weight with group size 3: weighted mean of two group means - weight with group sd 4: weighted mean of two group means - weight with group se 5: mean of two group medians 6: weighted mean of two group medians - weight with group size 7: weighted mean of two group median - weight with group IQR 8: weighted mean of two group median - weight with group IQR and size}
+\item{rule}{Split rule used in classification (integer from 1 to 8). 
+1: mean of two group means 
+2: weighted mean of two group means - weight with group size
+3: weighted mean of two group means - weight with group sd 
+4: weighted mean of two group means - weight with group se 
+5: mean of two group medians 
+6: weighted mean of two group medians - weight with group size 
+7: weighted mean of two group median - weight with group IQR 
+8: weighted mean of two group median - weight with group IQR and size}
 }
 \value{
 predicted values from PPforest or baggtree
 }
 \description{
 Obtain predicted class for new data from baggtree function or PPforest
-}
-\examples{
-\dontrun{
-crab.trees <- baggtree(data = crab, class = 'Type', 
-m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
- 
-pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores = 2)
-
-pprf.crab <- PPforest(data = crab, class = 'Type',
- std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
- 
-trees_pred(pprf.crab, xnew = pprf.crab$test ,parallel = TRUE)
-}
 }

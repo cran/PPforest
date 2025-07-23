@@ -1,27 +1,34 @@
 
-The `PPforest` package
+`PPforest` package
 ======================
-N. da Silva, D. Cook & E. Lee 
+Natalia da Silva, Dianne Cook & Eun-Kyung Lee 
 
 
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-[![CRAN Status](https://www.r-pkg.org/badges/version/PPforest)]( https://CRAN.R-project.org/package=PPforest) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/PPforest)](https://www.r-pkg.org/pkg/PPforest)[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
+<img src="man/figures/PPforest.png" align="right" alt="" width="160" />
+
+
+[![CRAN Status](https://www.r-pkg.org/badges/version/PPforest)]( https://CRAN.R-project.org/package=PPforest)[![CRAN\_Download\_Badge](https://cranlogs.r-pkg.org/badges/grand-total/PPforest)](https://cran.r-project.org/package=PPforest) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/PPforest)](https://www.r-pkg.org/pkg/PPforest)
+
 
 Introduction
 ============
+
 
 The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
 
 To improve the speed performance `PPforest` package, `PPtree` algorithm was translated to Rcpp. 
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
+
 The development version of`PPforest` can be installed from github using:
 
-```r
-library(devtools)
-install_github("natydasilva/PPforest")
-library(PPforest)
-```
+
+`library(devtools)`
+
+`install_github("natydasilva/PPforest")`
+
+`library(PPforest)`
+
 
 
 Overview PPforest package
@@ -40,8 +47,8 @@ Overview PPforest package
 |PPforest|Runs a Projection pursuit random forest|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
 |print.PPforest| Print PPforest object|
-|predict.PPforest|Predict class for the test set and calculate prediction error|
-|ternary_str|Data structure with the  projected and boundary by node and class|
+|predict.PPforest|Predict a PPforest object for newdata|
+|ternary_str|Data structure with the projected and boundary by node and class|
 |tree_pred|Obtain predicted class for new data using PPforest t.|
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
@@ -57,29 +64,34 @@ Australian crab data set will be used as example. This data contains measurement
 5. BD depth of the body; for females, measured after displacement of the abdomen, in mm
 
 
-```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
-The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
-
+`PPforest` function runs a projection pursuit random forest.The arguments are a `data` a data.frame object with the data information, `y` a character with the name of the class variable.  `size.tr` 
+to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test internally in the forest and the PPforest object reports both errors. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
+The number of trees in the forest is specified using the argument `m`. The argument `size.p` is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
+The algorithm can be parallelized using `parallel` and `cores` arguments. 
 ```r 
-
-pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
+set.seed(123)
+pprf.crab <- PPforest::PPforest(data = crab, y = "Type", size.tr = 0.7, m = 200,
                                 size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
 
 pprf.crab
 
-Call:
- PPforest::PPforest(data = crab, class = "Type", size.tr = 1,      m = 200, PPmethod = "LDA", size.p = 0.5, parallel = TRUE,      cores = 2) 
-               Type of random forest: Classification
-                     Number of trees: 200
-No. of variables tried at each split: 2
 
-        OOB estimate of  error rate: 5%
+
+Call:
+ PPforest(data = crab, y = "Type", xstd = "no", size.tr = 1, m = 3,  PPmethod = "LDA", size.p = 1, parallel = TRUE, cores = 2,      rule = 1) 
+               Type of random forest: Classification
+                     Number of trees: 3
+No. of variables tried at each split: 5
+
+        OOB estimate of  error rate: 26.5%
 Confusion matrix:
              BlueFemale BlueMale OrangeFemale OrangeMale class.error
-BlueFemale           49        1            0          0        0.02
-BlueMale              6       44            0          0        0.12
-OrangeFemale          0        0           47          3        0.06
-OrangeMale            0        0            0         50        0.00
+BlueFemale           48        2            0          0        0.04
+BlueMale             21       29            0          0        0.42
+OrangeFemale         14        0           33          3        0.34
+OrangeMale           13        0            0         37        0.26
+
+
 ```
 
 `PPforest` print a summary result from the model with the confusion matrix information and the oob-error rate in a similar way randomForest packages does.
@@ -89,30 +101,66 @@ This function returns the predicted values of the training data, training error,
 The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
 
 ```r
-str(pprf.crab,max.level=1 )
-List of 21
- $ predicting.training: Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 1 2 2 2 2 1 2 2 1 ...
- $ training.error     : num 0.045
- $ prediction.test    : NULL
- $ error.test         : NULL
- $ oob.error.forest   : num 0.05
- $ oob.error.tree     : num [1:200, 1] 0.1918 0.0597 0.12 0.1519 0.303 ...
+str(pprf.crab, max.level = 1)
+List of 28
+ $ predicting.training: Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 2 2 2 1 2 2 1 2 1 ...
+ $ training.error     : num 0.0571
+ $ prediction.test    : Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 2 2 2 2 2 2 2 2 2 ...
+ $ error.test         : num 0.0667
+ $ oob.error.forest   : num 0.0643
+ $ oob.error.tree     : num [1:200, 1] 0.1961 0.0625 0.1429 0.0408 0.1923 ...
  $ boot.samp          :List of 200
  $ output.trees       :List of 200
- $ proximity          : num [1:200, 1:200] 0 0.72 0.835 0.85 0.78 0.865 0.32 0.875 0.765 0.29 ...
- $ votes              : num [1:200, 1:4] 0.375 0.605 0.372 0.417 0.253 ...
- $ prediction.oob     : Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 1 2 2 2 2 1 2 2 1 ...
+ $ proximity          : num [1:140, 1:140] 0 0.79 0.735 0.8 0.36 0.825 0.71 0.265 0.46 0.36 ...
+ $ votes              : num [1:140, 1:4] 0.243 0.288 0.183 0.235 0.835 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ prediction.oob     : Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 2 2 2 1 2 2 1 2 1 ...
  $ n.tree             : num 200
- $ n.var              : num 2
+ $ n.var              : int 3
  $ type               : chr "Classification"
- $ confusion          : num [1:4, 1:5] 49 6 0 0 1 44 0 0 0 0 ...
+ $ confusion          : num [1:4, 1:5] 33 4 0 0 2 31 0 1 0 0 ...
   ..- attr(*, "dimnames")=List of 2
- $ call               : language PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200, PPmethod = "LDA", size.p = 0.5,      parall| __truncated__
- $ train              :Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	200 obs. of  6 variables:
- $ test               : NULL
- $ vote.mat           : num [1:200, 1:200] 1 2 4 2 1 2 1 2 4 2 ...
+ $ call               : language PPforest::PPforest(data = crab, y = "Type", size.tr = 0.7, m = 200, PPmethod = "LDA", size.p = 0.5,      parallel| __truncated__
+ $ train              :'data.frame':	140 obs. of  6 variables:
+ $ test               :'data.frame':	60 obs. of  6 variables:
+ $ vote.mat           : num [1:200, 1:140] 1 2 4 2 2 2 2 4 1 1 ...
   ..- attr(*, "dimnames")=List of 2
+ $ vote.mat_cl        : chr [1:4] "BlueFemale" "BlueMale" "OrangeFemale" "OrangeMale"
  $ class.var          : chr "Type"
- $ oob.obs            : num [1:200, 1:200] 1 0 1 0 0 1 0 1 0 0 ...
+ $ oob.obs            : num [1:200, 1:140] 0 0 0 0 0 0 1 1 0 1 ...
+ $ std                : chr "scale"
+ $ dataux             : num [1:140, 1:5] -2.14 -1.71 -1.65 -1.36 -1.28 ...
+  ..- attr(*, "dimnames")=List of 2
+  ..- attr(*, "scaled:center")= Named num [1:5] 15.5 12.8 32 36.3 14
+  .. ..- attr(*, "names")= chr [1:5] "FL" "RW" "CL" "CW" ...
+  ..- attr(*, "scaled:scale")= Named num [1:5] 3.47 2.57 7.06 7.84 3.4
+  .. ..- attr(*, "names")= chr [1:5] "FL" "RW" "CL" "CW" ...
+ $ mincol             : NULL
+ $ maxmincol          : NULL
+ $ train_mean         : Named num [1:5] 15.5 12.8 32 36.3 14
+  ..- attr(*, "names")= chr [1:5] "FL" "RW" "CL" "CW" ...
+ $ train_sd           : Named num [1:5] 3.47 2.57 7.06 7.84 3.4
+  ..- attr(*, "names")= chr [1:5] "FL" "RW" "CL" "CW" ...
  - attr(*, "class")= chr "PPforest"
+```
+
+Since the `PPforest` object was using and internal split we can check the test error as follows
+
+```r
+pprf.crab$error.test
+[1] 0.06666667
+```
+
+We also can split the data outside the forest and fit `PPforest` using a training sample and we should define the argument as `size.tr = 1`. The prediction in the test
+data can be donde using the function predict.
+
+```r
+ set.seed(123)
+ train <- sample(1:nrow(crab), nrow(crab)*.7)
+ crab_train <- data.frame(crab[train, ])
+ crab_test <- data.frame(crab[-train, ])
+
+ pprf.crab <- PPforest(data = crab_train, class = 'Type',
+   std = 'scale', size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+ pred <- predict(pprf.crab, newdata = crab_test[,-1], parallel = TRUE) 
 ```

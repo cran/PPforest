@@ -4,13 +4,13 @@
 \alias{PPforest}
 \title{Projection Pursuit Random Forest}
 \usage{
-PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
+PPforest(data, y, std = 'scale', size.tr, m, PPmethod, size.p,
  lambda = .1, parallel = FALSE, cores = 2, rule = 1)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
 
-\item{class}{A character with the name of the class variable.}
+\item{y}{A character with the name of the response variable.}
 
 \item{std}{if TRUE standardize the data set, needed to compute global importance measure.}
 
@@ -55,16 +55,15 @@ An object of class \code{PPforest} with components.
 }
 \examples{
 #crab example with all the observations used as training
-
-pprf.crab <- PPforest(data = crab, class = 'Type',
- std = FALSE, size.tr = 1, m = 200, size.p = .5, 
- PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
+set.seed(123)
+pprf.crab <- PPforest(data = crab, y = 'Type',
+ std = 'no', size.tr = 0.8, m = 100, size.p = 1, 
+ PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule = 1)
 pprf.crab
 
 }
 \references{
-Natalia da Silva, Dianne Cook & Eun-Kyung Lee (2021) 
-A Projection Pursuit Forest Algorithm for Supervised Classification, 
-Journal of Computational and Graphical Statistics,
-DOI: 10.1080/10618600.2020.1870480
+da Silva, N., Cook, D., & Lee, E. K. (2021). A projection pursuit forest 
+algorithm for supervised classification. Journal of Computational and Graphical Statistics,
+30(4), 1168-1180.
 }

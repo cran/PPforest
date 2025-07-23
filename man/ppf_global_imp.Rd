@@ -4,12 +4,12 @@
 \alias{ppf_global_imp}
 \title{Global importance measure for a PPforest object}
 \usage{
-ppf_global_imp(data, class, ppf)
+ppf_global_imp(data, y, ppf)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
 
-\item{class}{A character with the name of the class variable.}
+\item{y}{A character with the name of the class variable.}
 
 \item{ppf}{is a PPforest object}
 }
@@ -21,10 +21,15 @@ Global importance measure for a PPforest object
 }
 \examples{
 #crab data set with all the observations used as training
-
-pprf.crab <- PPforest(data = crab, std = TRUE, class = 'Type',
- size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', parallel = TRUE, cores = 2)
+pprf.crab <- PPforest(data = crab, y = 'Type',
+ std = 'no',  size.tr = 1, m = 200, size.p = .5, 
+ PPmethod = 'LDA', parallel = TRUE, cores = 2)
  
-ppf_global_imp(data = crab, class = 'Type', pprf.crab) 
+ppf_global_imp(data = crab, y = 'Type', pprf.crab) 
 
+}
+\references{
+da Silva, N., Cook, D., & Lee, E. K. (2021). A projection pursuit forest 
+algorithm for supervised classification. Journal of Computational and Graphical Statistics,
+30(4), 1168-1180.
 }
